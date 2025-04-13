@@ -60,11 +60,14 @@ function saveChanges() {
 
         const mediaElement = item.querySelector("img, video");
         const mediaUrl = mediaElement ? mediaElement.src : null;
-        const mediaType = mediaElement ? (mediaElement.tagName.toLowerCase() === "img" ? "image" : "video") : null;
+        const mediaType = mediaElement
+            ? (mediaElement.tagName.toLowerCase() === "img" ? "image" : "video")
+            : null;
 
         newsData[`news${index}`] = { title, description, mediaUrl, mediaType };
     });
 
+    // Save data to Firebase
     db.set(newsData, (error) => {
         if (error) {
             alert("Failed to save changes: " + error.message);
