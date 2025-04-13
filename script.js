@@ -1,83 +1,77 @@
-const GITHUB_TOKEN = "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"; // Replace this token immediately after testing
-const REPO_OWNER = "asadfsko"; // Your GitHub username
-const REPO_NAME = "your-repository-name"; // Your repository name
-const FILE_PATH = "index.html"; // File to update in the repository
-const BRANCH = "main"; // Branch to update
+// Replace this with your Firebase configuration
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://wnnss-4b028-default-rtdb.firebaseio.com/",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID",
+};
 
-// Save changes and push to GitHub
-async function saveChanges() {
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database().ref("news");
+
+// Load news data from Firebase on page load
+db.on("value", (snapshot) => {
+    const newsData = snapshot.val();
     const newsContainer = document.getElementById("news-container");
-    const newsHTML = newsContainer.innerHTML;
+    newsContainer.innerHTML = ""; // Clear existing content
 
-    try {
-        // Get the current file content SHA
-        const fileResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
-            headers: {
-                Authorization: `token ${GITHUB_TOKEN}`,
-            },
-        });
+    for (const id in newsData) {
+        const newsItem = document.createElement("section");
+        newsItem.className = "news-item";
+        newsItem.setAttribute("contenteditable", "false");
 
-        if (!fileResponse.ok) {
-            throw new Error("Failed to fetch file from GitHub.");
+        const newsTitle = document.createElement("h2");
+        newsTitle.textContent = newsData[id].title;
+
+        const newsDescription = document.createElement("p");
+        newsDescription.textContent = newsData[id].description;
+
+        newsItem.appendChild(newsTitle);
+        newsItem.appendChild(newsDescription);
+
+        if (newsData[id].mediaUrl) {
+            const mediaElement = newsData[id].mediaType === "image"
+                ? document.createElement("img")
+                : document.createElement("video");
+            mediaElement.src = newsData[id].mediaUrl;
+            mediaElement.controls = true;
+            mediaElement.style.maxWidth = "100%";
+            mediaElement.style.marginTop = "10px";
+            newsItem.appendChild(mediaElement);
         }
 
-        const fileData = await fileResponse.json();
-        const sha = fileData.sha;
-
-        // Prepare updated file content
-        const updatedContent = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WNSS Stupidity</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header class="header">
-        <h1>WNSS Stupidity</h1>
-        <p>Your daily dose of absurdity and news!</p>
-        <button class="mod-button" onclick="openModLogin()">Mod</button>
-    </header>
-    <main id="news-container" class="main-content">
-        ${newsHTML}
-    </main>
-    <footer class="footer">
-        <p>&copy; 2025 WNSS Stupidity. All rights reserved.</p>
-    </footer>
-    <script src="script.js"></script>
-</body>
-</html>
-`;
-
-        // Base64 encode the updated content
-        const base64Content = btoa(unescape(encodeURIComponent(updatedContent)));
-
-        // Update the file on GitHub
-        const updateResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
-            method: "PUT",
-            headers: {
-                Authorization: `token ${GITHUB_TOKEN}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                message: "Update news content",
-                content: base64Content,
-                sha: sha,
-                branch: BRANCH,
-            }),
-        });
-
-        if (!updateResponse.ok) {
-            throw new Error("Failed to update file on GitHub.");
-        }
-
-        alert("Changes saved and updated on GitHub successfully!");
-    } catch (error) {
-        console.error(error);
-        alert("An error occurred while saving changes.");
+        newsContainer.appendChild(newsItem);
     }
+});
+
+// Save changes to Firebase
+function saveChanges() {
+    const newsContainer = document.getElementById("news-container");
+    const newsItems = document.querySelectorAll(".news-item");
+
+    const newsData = {};
+    newsItems.forEach((item, index) => {
+        const title = item.querySelector("h2").textContent;
+        const description = item.querySelector("p").textContent;
+
+        const mediaElement = item.querySelector("img, video");
+        const mediaUrl = mediaElement ? mediaElement.src : null;
+        const mediaType = mediaElement ? (mediaElement.tagName.toLowerCase() === "img" ? "image" : "video") : null;
+
+        newsData[`news${index}`] = { title, description, mediaUrl, mediaType };
+    });
+
+    db.set(newsData, (error) => {
+        if (error) {
+            alert("Failed to save changes: " + error.message);
+        } else {
+            alert("Changes saved successfully!");
+        }
+    });
 }
 
 // Open the mod login modal
