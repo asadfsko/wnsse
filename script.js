@@ -1,4 +1,84 @@
-const PASSWORD = "Salle134";
+const GITHUB_TOKEN = "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"; // Replace this token immediately after testing
+const REPO_OWNER = "asadfsko"; // Your GitHub username
+const REPO_NAME = "your-repository-name"; // Your repository name
+const FILE_PATH = "index.html"; // File to update in the repository
+const BRANCH = "main"; // Branch to update
+
+// Save changes and push to GitHub
+async function saveChanges() {
+    const newsContainer = document.getElementById("news-container");
+    const newsHTML = newsContainer.innerHTML;
+
+    try {
+        // Get the current file content SHA
+        const fileResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            headers: {
+                Authorization: `token ${GITHUB_TOKEN}`,
+            },
+        });
+
+        if (!fileResponse.ok) {
+            throw new Error("Failed to fetch file from GitHub.");
+        }
+
+        const fileData = await fileResponse.json();
+        const sha = fileData.sha;
+
+        // Prepare updated file content
+        const updatedContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WNSS Stupidity</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>WNSS Stupidity</h1>
+        <p>Your daily dose of absurdity and news!</p>
+        <button class="mod-button" onclick="openModLogin()">Mod</button>
+    </header>
+    <main id="news-container" class="main-content">
+        ${newsHTML}
+    </main>
+    <footer class="footer">
+        <p>&copy; 2025 WNSS Stupidity. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
+`;
+
+        // Base64 encode the updated content
+        const base64Content = btoa(unescape(encodeURIComponent(updatedContent)));
+
+        // Update the file on GitHub
+        const updateResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            method: "PUT",
+            headers: {
+                Authorization: `token ${GITHUB_TOKEN}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                message: "Update news content",
+                content: base64Content,
+                sha: sha,
+                branch: BRANCH,
+            }),
+        });
+
+        if (!updateResponse.ok) {
+            throw new Error("Failed to update file on GitHub.");
+        }
+
+        alert("Changes saved and updated on GitHub successfully!");
+    } catch (error) {
+        console.error(error);
+        alert("An error occurred while saving changes.");
+    }
+}
 
 // Open the mod login modal
 function openModLogin() {
@@ -15,7 +95,7 @@ function closeModLogin() {
 // Verify the password
 function verifyPassword() {
     const inputPassword = document.getElementById("mod-password").value;
-    if (inputPassword === PASSWORD) {
+    if (inputPassword === "Salle134") {
         enterModMode();
         closeModLogin();
     } else {
@@ -33,34 +113,6 @@ function enterModMode() {
     document.getElementById("save-button").hidden = false;
     document.getElementById("create-news-button").hidden = false;
 }
-
-// Save changes
-function saveChanges() {
-    const newsContainer = document.getElementById("news-container");
-    const newsHTML = newsContainer.innerHTML;
-
-    // Save changes to localStorage (or send to server if needed)
-    localStorage.setItem("newsContent", newsHTML);
-
-    // Exit mod mode
-    const newsItems = document.querySelectorAll(".news-item");
-    newsItems.forEach((item) => {
-        item.setAttribute("contenteditable", "false");
-        item.style.border = "1px solid #1e90ff"; // Reset border
-    });
-    document.getElementById("save-button").hidden = true;
-    document.getElementById("create-news-button").hidden = true;
-
-    alert("Changes saved successfully!");
-}
-
-// Load saved changes on page load
-window.onload = () => {
-    const savedNews = localStorage.getItem("newsContent");
-    if (savedNews) {
-        document.getElementById("news-container").innerHTML = savedNews;
-    }
-};
 
 // Open the Create News modal
 function openCreateNews() {
