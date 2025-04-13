@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WNSS Stupidity</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>WNSS Stupidity</h1>
+        <p>Your daily dose of absurdity and news!</p>
+        <button class="mod-button" onclick="openModLogin()">Mod</button>
+    </header>
+    <main id="news-container" class="main-content">
+        <section class="news-item" contenteditable="false">
+            <h2>Breaking News Title</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vel libero vel augue molestie gravida.</p>
+        </section>
+        <section class="news-item" contenteditable="false">
+            <h2>Another News Title</h2>
+            <p>Curabitur malesuada arcu in sapien consequat, nec suscipit velit bibendum. Nullam congue ex vel orci vehicula.</p>
+        </section>
+    </main>
+    <footer class="footer">
+        <p>&copy; 2025 WNSS Stupidity. All rights reserved.</p>
+    </footer>
+
+    <!-- Mod Login Modal -->
+    <div id="mod-login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModLogin()">&times;</span>
+            <h2>Enter Mod Password</h2>
+            <input type="password" id="mod-password" placeholder="Password">
+            <button onclick="verifyPassword()">Submit</button>
+            <p id="error-message" class="error-message"></p>
+        </div>
+    </div>
+
+    <!-- Create News Modal -->
+    <div id="create-news-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateNews()">&times;</span>
+            <h2>Create New News</h2>
+            <input type="text" id="news-title" placeholder="News Title">
+            <textarea id="news-description" placeholder="News Description"></textarea>
+            <input type="file" id="news-media" accept="image/*,video/*">
+            <button onclick="addNews()">Add News</button>
+        </div>
+    </div>
+
+    <!-- Save Button -->
+    <button id="save-button" class="save-button" onclick="saveChanges()" hidden>Save Changes</button>
+    <button id="create-news-button" class="create-news-button" onclick="openCreateNews()" hidden>Create New News</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
