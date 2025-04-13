@@ -1,12 +1,12 @@
 // Replace this with your Firebase configuration
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    apiKey: "YOUR_API_KEY", // Replace with your actual API key from Firebase
+    authDomain: "wnnss.firebaseapp.com",
     databaseURL: "https://wnnss-4b028-default-rtdb.firebaseio.com/",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID",
+    projectId: "wnnss",
+    storageBucket: "wnnss.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID", // Replace with your actual Messaging Sender ID from Firebase
+    appId: "YOUR_APP_ID" // Replace with your actual App ID from Firebase
 };
 
 // Initialize Firebase
