@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WNSS Stupidity</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.9/firebase-database.js"></script>
 </head>
 <body>
     <header class="header">
@@ -13,14 +15,7 @@
         <button class="mod-button" onclick="openModLogin()">Mod</button>
     </header>
     <main id="news-container" class="main-content">
-        <section class="news-item" contenteditable="false">
-            <h2>Breaking News Title</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vel libero vel augue molestie gravida.</p>
-        </section>
-        <section class="news-item" contenteditable="false">
-            <h2>Another News Title</h2>
-            <p>Curabitur malesuada arcu in sapien consequat, nec suscipit velit bibendum. Nullam congue ex vel orci vehicula.</p>
-        </section>
+        <!-- News content will be dynamically loaded here -->
     </main>
     <footer class="footer">
         <p>&copy; 2025 WNSS Stupidity. All rights reserved.</p>
